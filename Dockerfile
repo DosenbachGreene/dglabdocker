@@ -55,10 +55,12 @@ RUN tar xvf 4dfp_scripts.tar
 
 # grab the additional 4dfp supporting reference images and other files
 WORKDIR ${REFDIR}
-# RUN curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/refdir.tar
-# RUN tar xvf refdir.tar
+#RUN curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/refdir.tar
+#RUN tar xvf refdir.tar
 
 # clean-up
-RUN apt-get remove -y make
+RUN apt-get remove -y make gfortran
 RUN apt-get autoremove -y
+RUN apt-get upgrade -y
+RUN apt-get install -y libgfortran3
 WORKDIR /
