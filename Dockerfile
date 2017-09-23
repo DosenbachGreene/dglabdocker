@@ -2,9 +2,16 @@
 FROM ubuntu:xenial
 MAINTAINER Andrew Van <vanandrew@wustl.edu>
 
-# Update and install sudo (needed on xenial)
+# Update and install sudo,wget,dirmngr
 RUN apt-get update
 RUN apt-get install -y sudo
+RUN apt-get install -y wget 
+RUN apt-get install -y dirmngr
+
+# Add Neurodebian Repo
+RUN wget -O- http://neuro.debian.net/lists/xenial.us-tn.full | tee /etc/apt/sources.list.d/neurodebian.sources.list
+RUN apt-key adv --recv-keys --keyserver hkp://pool.sks-keyservers.net:80 0xA5D32F012649A5A9
+RUN apt-get update
 
 # Install tcsh,curl,make,gfortran for compiling 4dfp
 RUN apt-get install -y tcsh
@@ -58,9 +65,20 @@ WORKDIR ${REFDIR}
 #RUN curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/refdir.tar
 #RUN tar xvf refdir.tar
 
+# install git
+RUN apt-get install -y git
+
+# install fsl
+RUN apt-get install -y fsl-complete
+
+# install connectome-workbench
+RUN apt-get install -y connectome-workbench
+
+# install fsleyes
+RUN apt-get install -y fsleyes
+
 # clean-up
 RUN apt-get remove -y make gfortran
 RUN apt-get autoremove -y
-RUN apt-get upgrade -y
 RUN apt-get install -y libgfortran3
 WORKDIR /

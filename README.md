@@ -2,7 +2,7 @@
 
 This repo contains the Dockerfile for building the Common Lab docker image. The goal of this repo is to build a docker image with all the dependencies needed to run any script in the lab.
 
-This docker image is based off of ubuntu 16.04 (xenial)
+This docker image is based off of Ubuntu 16.04 (xenial)
 
 ```
 Dosenbach and Greene Lab Docker Image
