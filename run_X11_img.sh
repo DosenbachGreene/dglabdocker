@@ -17,7 +17,9 @@ xauth nlist $(hostname)/unix:${DISPLAY:1:1} | sed -e 's/^..../ffff/' | xauth -f 
 echo "Running Image..."
 docker run -it --rm \
 	-e DISPLAY=${DISPLAY} \
+	-e QT_X11_NO_MITSHM=1 \
 	-v ${XTEMP}:${XTEMP} \
 	-e XAUTHORITY=${XTEMP} \
-	-v /tmp/.X11-unix:/tmp.X11-unix \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	--net=host \
 	vanandrew/dglabimg
