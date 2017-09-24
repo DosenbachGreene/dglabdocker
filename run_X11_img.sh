@@ -23,6 +23,7 @@ if [ $(uname) == 'Linux' ]; then
 		-e QT_X11_NO_MITSHM=1 \
 		-v ${XTEMP}:${XTEMP} \
 		-e XAUTHORITY=${XTEMP} \
+		--device=/dev/dri:/dev/dri \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		--net=host \
 		vanandrew/dglabimg
