@@ -3,7 +3,7 @@
 # Check Environment
 if [ $(uname) == 'Linux' ]; then
 	echo "Detected Host System: Linux"
-	# Setup xauth file location; Remove if exists 
+	# Setup xauth file location; Remove if exists
 	echo "Setting up X11 forwarding for User: ${USER}"
 	XTEMP=/tmp/.docker.xauth.${USER}
 	if [ -e ${XTEMP} ]; then
@@ -35,6 +35,24 @@ if [ $(uname) == 'Linux' ]; then
 
 elif [ $(uname) == 'Darwin' ]; then
 	echo "Detected Host System: macOS"
-	# TO-DO
-	echo "macOS support not yet added..."
+
+    echo "Running Docker with X11 requires XQuartz."
+    echo "The 'Allow connections from network clients' must also be enabled."
+    echo "This can be found under XQuartz-->Preferences-->Security."
+
+    # Open Xquartz
+    echo "Opening XQuartz..."
+    XQuartz&
+
+    # Add IP to xhost
+    IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
+    xhost + ${IP}
+
+    # Get display number
+    DISPLAY_NUM=`ps -ef | grep "Xquartz :\d" | grep -v xinit | awk '{ print $9; }'`
+
+    docker run -it --rm --privileged \
+        -e DISPLAY=${IP}${DISPLAY_NUM} \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        vanandrew/dglabimg
 fi
