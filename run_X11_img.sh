@@ -42,7 +42,6 @@ elif [ $(uname) == 'Darwin' ]; then
 
     # Open Xquartz
     echo "Opening XQuartz..."
-    XQuartz&
 
     # Add IP to xhost
     IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
