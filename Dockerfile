@@ -24,10 +24,8 @@ WORKDIR /opt/4dfp
 RUN curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/4dfp_release.txt
 RUN mkdir NILSRC
 RUN mkdir RELEASE
-RUN mkdir REFDIR
 
 ENV NILSRC /opt/4dfp/NILSRC
-ENV REFDIR /opt/4dfp/REFDIR
 ENV RELEASE /opt/4dfp/RELEASE
 ENV PATH ${PATH}:${RELEASE}
 
@@ -60,25 +58,46 @@ WORKDIR ${RELEASE}
 RUN curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/4dfp_scripts.tar
 RUN tar xvf 4dfp_scripts.tar
 
-# grab the additional 4dfp supporting reference images and other files
-WORKDIR ${REFDIR}
-#RUN curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/refdir.tar
-#RUN tar xvf refdir.tar
-
 # install git
-RUN apt-get install -y git
-
-# install fsl
-RUN apt-get install -y fsl-complete
+RUN apt-get update; apt-get install -y git
 
 # install connectome-workbench
 RUN apt-get install -y connectome-workbench
 
+# install fsl
+WORKDIR /opt/fsl/fslbuild
+RUN curl -O https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.10-sources.tar.gz
+RUN tar zxf fsl-5.0.10-sources.tar.gz
+RUN apt-get install -y build-essential libexpat1-dev libx11-dev libgl1-mesa-dev libglu1-mesa-dev zlib1g-dev
+ENV FSLDIR /opt/fsl/fslbuild/fsl
+RUN sed -i '52iFSLCONFDIR=$FSLDIR/config' ${FSLDIR}/etc/fslconf/fsl.sh
+RUN sed -i '53iFSLMACHTYPE=`$FSLDIR/etc/fslconf/fslmachtype.sh`' ${FSLDIR}/etc/fslconf/fsl.sh
+RUN sed -i '57iexport FSLCONFDIR FSLMACHTYPE' ${FSLDIR}/etc/fslconf/fsl.sh
+# Fix compiler error in FSL 5.0.10
+RUN sed -i "55s/(CC)/(CXX)/" ${FSLDIR}/src/miscvis/Makefile
+# Disable MIST compilation
+RUN sed -i "13s/ mist-clean\";/\";/" ${FSLDIR}/build
+RUN . ${FSLDIR}/etc/fslconf/fsl.sh && \
+	cp -r ${FSLDIR}/config/linux_64-gcc4.8 ${FSLDIR}/config/${FSLMACHTYPE} && \
+	cd ${FSLDIR} && \
+	./build
+RUN cp -r ${FSLDIR}/bin /opt/fsl/ && cp -r ${FSLDIR}/data /opt/fsl/ && cp -r ${FSLDIR}/doc /opt/fsl/ && \
+	cp -r ${FSLDIR}/etc /opt/fsl/ && cp -r ${FSLDIR}/tcl /opt/fsl/
+WORKDIR /opt/fsl
+RUN rm -r ./fslbuild
+ENV FSLDIR /opt/fsl
+ENV FSLOUTPUTYPE NIFTI_GZ
+ENV FSLMULTIFILEQUIT TRUE
+ENV FSLTCLSH ${FSLDIR}/bin/fsltclsh
+ENV FSLWISH ${FSLDIR}/fslwish
+ENV PATH ${PATH}:${FSLDIR}/bin
+
 # install fsleyes
 RUN apt-get install -y fsleyes
+RUN ln -s $(which FSLeyes) /usr/bin/fsleyes
 
 # clean-up
+RUN apt-get upgrade -y
 RUN apt-get remove -y make gfortran
 RUN apt-get autoremove -y
-RUN apt-get install -y libgfortran3
 WORKDIR /
