@@ -39,6 +39,8 @@ elif [ $(uname) == 'Darwin' ]; then
     echo "Running Docker with X11 requires XQuartz."
     echo "The 'Allow connections from network clients' must also be enabled."
     echo "This can be found under XQuartz-->Preferences-->Security."
+    echo "You must also enable indirect GLX. You can do this with the following terminal command:"
+    echo "    defaults write org.macosforge.xquartz.X11 enable_iglx -bool true"
 
     # Open Xquartz
     echo "Opening XQuartz..."
