@@ -51,8 +51,16 @@ RUN curl -O https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.10-sources.tar.gz &&
 	cp -r ${FSLDIR}/config/linux_64-gcc4.8 ${FSLDIR}/config/${FSLMACHTYPE} && \
 	cd ${FSLDIR} && ./build && \
     rm -r ${FSLDIR}/LICENCE ${FSLDIR}/README ${FSLDIR}/build ${FSLDIR}/build.log ${FSLDIR}/config ${FSLDIR}/extras ${FSLDIR}/include ${FSLDIR}/lib ${FSLDIR}/refdoc ${FSLDIR}/src && \
-    apt-get remove -y build-essential
+    apt-get remove -y build-essential && apt-get autoremove -y
 ENV FSLOUTPUTTYPE=NIFTI_GZ FSLMULTIFILEQUIT=TRUE FSLTCLSH=${FSLDIR}/bin/fsltclsh FSLWISH=${FSLDIR}/fslwish PATH=${PATH}:${FSLDIR}/bin
+
+### Install caret from my box link ###
+RUN curl -L -o caret.zip https://wustl.box.com/shared/static/957c23jc3md68bgxskg7vgncq43j2aej.zip && apt-get install -y unzip && \
+    unzip caret.zip && rm caret.zip && apt-get remove -y unzip
+ENV PATH=${PATH}:/opt/caret/bin_linux64
+
+### Install freesurfer ###
+# TO-DO
 
 # Goto Root
 WORKDIR /
