@@ -59,8 +59,5 @@ RUN curl -L -o caret.zip https://wustl.box.com/shared/static/957c23jc3md68bgxskg
     unzip caret.zip && rm caret.zip && apt-get remove -y unzip
 ENV PATH=${PATH}:/opt/caret/bin_linux64
 
-### Install freesurfer ###
-# TO-DO
-
 # Goto Root
 WORKDIR /
