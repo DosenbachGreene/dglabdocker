@@ -59,5 +59,9 @@ RUN curl -L -o caret.zip https://wustl.box.com/shared/static/957c23jc3md68bgxskg
     unzip caret.zip && rm caret.zip && apt-get remove -y unzip
 ENV PATH=${PATH}:/opt/caret/bin_linux64
 
+# install python3 and nibabel
+RUN apt-get update && apt-get install -y --allow-unauthenticated python3 python3-pip && \
+    pip3 install nibabel numpy
+
 # Goto Root
 WORKDIR /
