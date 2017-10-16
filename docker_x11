@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Get Inputs
+DOCKER_IMAGE=${1}
+
 # Check Environment
 if [ $(uname) == 'Linux' ]; then
 	echo "Detected Host System: Linux"
@@ -26,7 +29,7 @@ if [ $(uname) == 'Linux' ]; then
 		--device=/dev/dri:/dev/dri \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		--net=host \
-		vanandrew/dglabimg
+		${DOCKER_IMAGE}
 
 	# Clean up auth file when done
 	if [ -e ${XTEMP} ]; then
@@ -35,7 +38,6 @@ if [ $(uname) == 'Linux' ]; then
 
 elif [ $(uname) == 'Darwin' ]; then
 	echo "Detected Host System: macOS"
-
     echo "Running Docker with X11 requires XQuartz."
     echo "The 'Allow connections from network clients' must also be enabled."
     echo "This can be found under XQuartz-->Preferences-->Security."
@@ -55,5 +57,5 @@ elif [ $(uname) == 'Darwin' ]; then
     docker run -it --rm --privileged \
         -e DISPLAY=${IP}${DISPLAY_NUM} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
-        vanandrew/dglabimg
+        ${DOCKER_IMAGE}
 fi
