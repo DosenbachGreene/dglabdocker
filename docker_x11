@@ -29,6 +29,7 @@ if [ $(uname) == 'Linux' ]; then
 		--device=/dev/dri:/dev/dri \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		--net=host \
+        -v $(echo ${HOME}):/home \
 		${DOCKER_IMAGE}
 
 	# Clean up auth file when done
@@ -57,5 +58,6 @@ elif [ $(uname) == 'Darwin' ]; then
     docker run -it --rm --privileged \
         -e DISPLAY=${IP}${DISPLAY_NUM} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v $(echo ${HOME}):/home \
         ${DOCKER_IMAGE}
 fi
