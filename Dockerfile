@@ -59,9 +59,20 @@ RUN curl -L -o caret.zip https://wustl.box.com/shared/static/957c23jc3md68bgxskg
     unzip caret.zip && rm caret.zip && apt-get remove -y unzip
 ENV PATH=${PATH}:/opt/caret/bin_linux64
 
-# install python3 and nibabel
-RUN apt-get update && apt-get install -y --allow-unauthenticated python3 python3-pip && \
+# Remove neurodebian source & install python3 and nibabel
+RUN rm /etc/apt/sources.list.d/neurodebian.sources.list && apt-get update && apt-get install -y python3 python3-pip && \
     pip3 install nibabel numpy
+
+# install freesurfer
+RUN curl -O ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
+    tar -C /usr/local -xzvf freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
+    rm freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz
+ENV FREESURFER_HOME=/usr/local/freesurfer SUBJECTS_DIR=/FS_subjects FUNCTIONALS_DIR=/FS_sessions
+ENV FSFAST_HOME=${FREESURFER_HOME}/fsfast MINC_BIN_DIR=${FREESURFER_HOME}/mni/bin MNI_DIR=${FREESURFER_HOME}/mni \
+    MINC_LIB_DIR=$FREESURFER_HOME/mni/lib MNI_DATAPATH=$FREESURFER_HOME/mni/data FSL_DIR=${FSLDIR} \
+    LOCAL_DIR=${FREESURFER_HOME}/local FSF_OUTPUT_FORMAT=nii.gz
+ENV FMRI_ANALYSIS_DIR=${FSFAST_HOME} MNI_PERL5LIB=${MINC_LIB_DIR}/perl5/5.8.5
+ENV PERL5LIB=${MNI_PERL5LIB} PATH=${MINC_BIN_DIR}:${PATH} PATH=${PATH}:${FREESURFER_HOME}/bin:${FSFAST_HOME}/bin FIX_VERTEX_AREA=
 
 # Goto Root
 WORKDIR /
