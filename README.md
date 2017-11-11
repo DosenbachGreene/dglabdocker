@@ -22,3 +22,7 @@ Alternatively, you can build this docker image with the following command:
 ```
 docker build . -t vanandrew/dglabimg:[optional version tag]
 ```
+
+## Usage
+
+See our [wiki](https://dosenbachlab.wustl.edu/wiki/docker_singularity/).
