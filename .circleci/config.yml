@@ -8,4 +8,4 @@ jobs:
       - run:
             command: docker build . -t vanandrew/dglabimg:v1.00
             no_output_timeout: "3h"
-      - run: docker push vanandrew/dglabimg:v1.00
+      - run: docker push vanandrew/dglabimg
