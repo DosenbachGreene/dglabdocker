@@ -6,7 +6,7 @@ MAINTAINER Andrew Van <vanandrew@wustl.edu>
 WORKDIR /opt
 ENV NILSRC=/opt/4dfp_tools/NILSRC RELEASE=/opt/4dfp_tools/RELEASE REFDIR=/opt/4dfp_tools/atlas
 ENV PATH=${PATH}:${RELEASE}:/opt/4dfp_tools/scripts
-RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran git && \
+RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran git unzip && \
     git clone https://github.com/DosenbachGreene/4dfp_tools.git && \
     mkdir RELEASE && ls -l && cd ${NILSRC} && \
     sed -i 's|(${OSTYPE}, linux)|(linux-gnu, linux-gnu)|g' */*.mak && \
