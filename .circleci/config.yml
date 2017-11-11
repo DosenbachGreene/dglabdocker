@@ -1,0 +1,8 @@
+version: 2
+jobs:
+  build:
+    steps:
+      - checkout
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build . -t vanandrew/dglabimg:v1.00
+      - run: docker push vanandrew/dglabimg:v1.00

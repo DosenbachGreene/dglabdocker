@@ -3,15 +3,12 @@ FROM ubuntu:xenial
 MAINTAINER Andrew Van <vanandrew@wustl.edu>
 
 ### Install 4dfp tools ###
-WORKDIR /opt/4dfp
-ENV NILSRC=/opt/4dfp/NILSRC RELEASE=/opt/4dfp/RELEASE
-ENV PATH=${PATH}:${RELEASE}
+WORKDIR /opt
+ENV NILSRC=/opt/4dfp_tools/NILSRC RELEASE=/opt/4dfp_tools/RELEASE REFDIR=/opt/4dfp_tools/atlas
+ENV PATH=${PATH}:${RELEASE}:/opt/4dfp_tools/scripts
 RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran git && \
-    curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/4dfp_release.txt && \
-    mkdir NILSRC && mkdir RELEASE && \
-    cd ${NILSRC} && \
-    curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/nil-tools.tar && \
-    tar xvf nil-tools.tar && rm nil-tools.tar && \
+    git clone https://github.com/DosenbachGreene/4dfp_tools.git && \
+    mkdir RELEASE && ls -l && cd ${NILSRC} && \
     sed -i 's|(${OSTYPE}, linux)|(linux-gnu, linux-gnu)|g' */*.mak && \
 	sed -i 's|chgrp program ${PROG}|#chgrp program ${PROG} # removed for ubuntu compilation|g' */*.mak && \
 	sed -i 's|OBJECTS.*=.*nifti_4dfp.o 4dfp-format.o nifti-format.o split.o transform.o common-format.o parse_common.o|OBJECTS = nifti_4dfp.o -lm 4dfp-format.o -lm nifti-format.o -lm split.o -lm transform.o -lm common-format.o -lm parse_common.o -lm |g' nifti_4dfp/nifti_4dfp.mak && \
@@ -23,11 +20,9 @@ RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran gi
 	sed -i "s/wget ftp/curl -O ftp/" make_nil-tools.csh && \
 	sed -i "s/wget --help/curl --help/" make_nil-tools.csh && \
 	sed -i "s/wget/curl/g" make_nil-tools.csh && \
-    chmod u+x make_nil-tools.csh && ./make_nil-tools.csh && cd /opt/4dfp && rm -r ${NILSRC} && \
-    cd ${RELEASE} && \
-    curl -O ftp://imaging.wustl.edu/pub/raichlab/4dfp_tools/4dfp_scripts.tar && \
-    tar xvf 4dfp_scripts.tar && rm 4dfp_scripts.tar && cd /opt/4dfp && \
-    apt-get remove -y make gfortran && apt-get autoremove -y
+    chmod u+x make_nil-tools.csh && ./make_nil-tools.csh && cd /opt/4dfp_tools && rm -r ${NILSRC} && \
+	curl -L -o atlas.zip https://wustl.box.com/shared/static/fss7snz1a7i7xb8ezsdredrcpv2k1lmt.zip && \
+	unzip atlas.zip && rm atlas.zip && apt-get remove -y make gfortran && apt-get autoremove -y
 
 ### Install stuff from neurodebian: connectome-workbench and fsleyes ###
 RUN wget -O- http://neuro.debian.net/lists/xenial.us-ca.full | tee /etc/apt/sources.list.d/neurodebian.sources.list && \
@@ -63,16 +58,9 @@ ENV PATH=${PATH}:/opt/caret/bin_linux64
 RUN rm /etc/apt/sources.list.d/neurodebian.sources.list && apt-get update && apt-get install -y python3 python3-pip && \
     pip3 install nibabel numpy
 
-# install freesurfer
-RUN curl -O ftp://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/6.0.0/freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
-    tar -C /usr/local -xzvf freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz && \
-    rm freesurfer-Linux-centos6_x86_64-stable-pub-v6.0.0.tar.gz
-ENV FREESURFER_HOME=/usr/local/freesurfer SUBJECTS_DIR=/FS_subjects FUNCTIONALS_DIR=/FS_sessions
-ENV FSFAST_HOME=${FREESURFER_HOME}/fsfast MINC_BIN_DIR=${FREESURFER_HOME}/mni/bin MNI_DIR=${FREESURFER_HOME}/mni \
-    MINC_LIB_DIR=$FREESURFER_HOME/mni/lib MNI_DATAPATH=$FREESURFER_HOME/mni/data FSL_DIR=${FSLDIR} \
-    LOCAL_DIR=${FREESURFER_HOME}/local FSF_OUTPUT_FORMAT=nii.gz
-ENV FMRI_ANALYSIS_DIR=${FSFAST_HOME} MNI_PERL5LIB=${MINC_LIB_DIR}/perl5/5.8.5
-ENV PERL5LIB=${MNI_PERL5LIB} PATH=${MINC_BIN_DIR}:${PATH} PATH=${PATH}:${FREESURFER_HOME}/bin:${FSFAST_HOME}/bin FIX_VERTEX_AREA=
+# Make directories to mount MATLAB and freesurfer under /opt
+RUN mkdir -p /opt/MATLAB && mkdir -p /opt/freesurfer
+ENV PATH=${PATH}:/opt/MATLAB/bin FREESURFER_HOME=/opt/freesurfer
 
 # Goto Root
 WORKDIR /
