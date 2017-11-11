@@ -16,4 +16,4 @@ workflows:
             - build_and_push_image:
                 filters:
                     tags:
-                        only: /^buildandpush.*/ 
+                        ignore: /.*/ 
