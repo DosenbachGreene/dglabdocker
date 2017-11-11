@@ -1,13 +1,22 @@
 version: 2
 jobs:
-  build:
+  build_and_push_image:
     machine: true
     steps:
       - checkout
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run:
-            command: |
-                docker pull vanandrew/dglabimg
-                docker build . -t vanandrew/dglabimg
+            command: docker build . -t vanandrew/dglabimg
             no_output_timeout: "3h"
       - run: docker push vanandrew/dglabimg
+workflows:
+    version: 2
+    build_and_push:
+        jobs: 
+            - build_and_push_image:
+                filters:
+                    tags:
+                        only: /^buildandpush.*/
+                
+        
+
