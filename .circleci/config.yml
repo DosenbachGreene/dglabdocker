@@ -6,8 +6,8 @@ jobs:
       - checkout
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run:
-        command: docker build . -t vanandrew/dglabimg
-        no_output_timeout: "3h"
+          command: docker build . -t vanandrew/dglabimg
+          no_output_timeout: "3h"
       - run: docker push vanandrew/dglabimg
 workflows:
   version: 2
