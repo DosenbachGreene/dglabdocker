@@ -5,5 +5,7 @@ jobs:
     steps:
       - checkout
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker build . -t vanandrew/dglabimg:v1.00
+      - run:
+			command: docker build . -t vanandrew/dglabimg:v1.00
+			no_output_timeout: "3h"
       - run: docker push vanandrew/dglabimg:v1.00
