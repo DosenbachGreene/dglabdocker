@@ -8,7 +8,7 @@ ENV NILSRC=/opt/4dfp_tools/NILSRC RELEASE=/opt/4dfp_tools/RELEASE REFDIR=/opt/4d
 ENV PATH=${PATH}:${RELEASE}:/opt/4dfp_tools/scripts
 RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran git unzip && \
     git clone https://github.com/DosenbachGreene/4dfp_tools.git && \
-    mkdir RELEASE && ls -l && cd ${NILSRC} && \
+    mkdir -p ${RELEASE} && ls -l && cd ${NILSRC} && \
     sed -i 's|(${OSTYPE}, linux)|(linux-gnu, linux-gnu)|g' */*.mak && \
 	sed -i 's|chgrp program ${PROG}|#chgrp program ${PROG} # removed for ubuntu compilation|g' */*.mak && \
 	sed -i 's|OBJECTS.*=.*nifti_4dfp.o 4dfp-format.o nifti-format.o split.o transform.o common-format.o parse_common.o|OBJECTS = nifti_4dfp.o -lm 4dfp-format.o -lm nifti-format.o -lm split.o -lm transform.o -lm common-format.o -lm parse_common.o -lm |g' nifti_4dfp/nifti_4dfp.mak && \
