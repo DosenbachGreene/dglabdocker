@@ -13,4 +13,4 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - build_and_push_image:
+      - build_and_push_image
