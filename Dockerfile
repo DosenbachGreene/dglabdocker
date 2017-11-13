@@ -48,7 +48,7 @@ RUN rm /etc/apt/sources.list.d/neurodebian.sources.list && apt-get update && apt
     pip3 install nibabel numpy
 
 # Make directories to mount MATLAB and freesurfer under /opt; install Matlab dependencies
-RUN apt-get update && apt-get install -y libpng12-dev libfreetype6-dev libblas-dev liblapack-dev gfortran build-essential xorg && \
+RUN apt-get update && apt-get install -y libpng12-dev libfreetype6-dev libblas-dev liblapack-dev gfortran build-essential && \
     mkdir -p /opt/MATLAB && mkdir -p /opt/freesurfer
 ENV PATH=${PATH}:/opt/MATLAB/bin FREESURFER_HOME=/opt/freesurfer
 
