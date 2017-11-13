@@ -8,18 +8,7 @@ ENV NILSRC=/opt/4dfp_tools/NILSRC RELEASE=/opt/4dfp_tools/RELEASE REFDIR=/opt/4d
 ENV PATH=${PATH}:${RELEASE}:/opt/4dfp_tools/scripts
 RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran git unzip && \
     git clone https://github.com/DosenbachGreene/4dfp_tools.git && \
-    mkdir -p ${RELEASE} && ls -l && cd ${NILSRC} && \
-    sed -i 's|(${OSTYPE}, linux)|(linux-gnu, linux-gnu)|g' */*.mak && \
-	sed -i 's|chgrp program ${PROG}|#chgrp program ${PROG} # removed for ubuntu compilation|g' */*.mak && \
-	sed -i 's|OBJECTS.*=.*nifti_4dfp.o 4dfp-format.o nifti-format.o split.o transform.o common-format.o parse_common.o|OBJECTS = nifti_4dfp.o -lm 4dfp-format.o -lm nifti-format.o -lm split.o -lm transform.o -lm common-format.o -lm parse_common.o -lm |g' nifti_4dfp/nifti_4dfp.mak && \
-	sed -i 's|${TRX}/endianio.o ${TRX}/Getifh.o ${TRX}/rec.o ${IMGLIN}/t4_io.o|${TRX}/endianio.o -lm ${TRX}/Getifh.o -lm ${TRX}/rec.o -lm ${IMGLIN}/t4_io.o -lm|g' aff_conv/aff_conv.mak && \
-	sed -i 's|${NII}/split.o ${NII}/transform.o ${NII}/4dfp-format.o ${NII}/nifti-format.o|${NII}/split.o -lm ${NII}/transform.o -lm ${NII}/4dfp-format.o -lm ${NII}/nifti-format.o -lm |g' aff_conv/aff_conv.mak && \
-    sed -i '442i# get newest dcm_to_4dfp.c' make_nil-tools.csh && \
-	sed -i '443icurl -L -O https://wustl.box.com/shared/static/ubof8682r88nbkxb7b4b1fsvfy4q1vr3.c' make_nil-tools.csh && \
-	sed -i '444imv ubof8682r88nbkxb7b4b1fsvfy4q1vr3.c dcm_to_4dfp.c' make_nil-tools.csh && \
-	sed -i "s/wget ftp/curl -O ftp/" make_nil-tools.csh && \
-	sed -i "s/wget --help/curl --help/" make_nil-tools.csh && \
-	sed -i "s/wget/curl/g" make_nil-tools.csh && \
+    git checkout dcm4dfpmod && mkdir -p ${RELEASE} && ls -l && cd ${NILSRC} && \
     chmod u+x make_nil-tools.csh && ./make_nil-tools.csh && cd /opt/4dfp_tools && rm -r ${NILSRC} && \
 	curl -L -o atlas.zip https://wustl.box.com/shared/static/fss7snz1a7i7xb8ezsdredrcpv2k1lmt.zip && \
 	unzip atlas.zip && rm atlas.zip && apt-get remove -y make gfortran && apt-get autoremove -y
