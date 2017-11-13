@@ -12,10 +12,5 @@ jobs:
 workflows:
   version: 2
   build_and_push:
-    jobs: 
+    jobs:
       - build_and_push_image:
-          filters:
-            tags:
-              only: /^buildandpush.*/
-            branches:
-              ignore: /.*/
