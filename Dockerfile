@@ -7,8 +7,8 @@ WORKDIR /opt
 ENV NILSRC=/opt/4dfp_tools/NILSRC RELEASE=/opt/4dfp_tools/RELEASE REFDIR=/opt/4dfp_tools/atlas
 ENV PATH=${PATH}:${RELEASE}:/opt/4dfp_tools/scripts
 RUN apt-get update && apt-get install -y wget dirmngr tcsh curl make gfortran git unzip && \
-    git clone https://github.com/DosenbachGreene/4dfp_tools.git && \
-    git checkout dcm4dfpmod && mkdir -p ${RELEASE} && ls -l && cd ${NILSRC} && \
+    git clone https://github.com/DosenbachGreene/4dfp_tools.git && mkdir -p ${RELEASE} && \
+    cd ${NILSRC} && git checkout dcm4dfpmod && \
     chmod u+x make_nil-tools.csh && ./make_nil-tools.csh && cd /opt/4dfp_tools && rm -r ${NILSRC} && \
 	curl -L -o atlas.zip https://wustl.box.com/shared/static/fss7snz1a7i7xb8ezsdredrcpv2k1lmt.zip && \
 	unzip atlas.zip && rm atlas.zip && apt-get remove -y make gfortran && apt-get autoremove -y
