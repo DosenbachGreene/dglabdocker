@@ -36,7 +36,7 @@ RUN curl -O https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.10-sources.tar.gz &&
     . ${FSLDIR}/etc/fslconf/fsl.sh && \
 	cp -r ${FSLDIR}/config/linux_64-gcc4.8 ${FSLDIR}/config/${FSLMACHTYPE} && \
     sed -i '22s/c++/c++ -std=c++03/' ${FSLDIR}/config/${FSLMACHTYPE}/systemvars.mk && \
-	sed -i "3s/LIBXMLXX_CFLAGS=\"/LIBXMLXX_CFLAGS=\"-std=c++03 /" ${FSLDIR}/extras/src/libxml++-2.34.0/fslconfigure
+	sed -i "3s/LIBXMLXX_CFLAGS=\"/LIBXMLXX_CFLAGS=\"-std=c++03 /" ${FSLDIR}/extras/src/libxml++-2.34.0/fslconfigure && \
     cd ${FSLDIR} && ./build && \
     rm -r ${FSLDIR}/LICENCE ${FSLDIR}/README ${FSLDIR}/build ${FSLDIR}/build.log ${FSLDIR}/config ${FSLDIR}/extras ${FSLDIR}/include ${FSLDIR}/lib ${FSLDIR}/refdoc ${FSLDIR}/src && \
     apt-get remove -y build-essential && apt-get autoremove -y
