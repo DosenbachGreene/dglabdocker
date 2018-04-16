@@ -52,7 +52,7 @@ RUN rm /etc/apt/sources.list.d/neurodebian.sources.list && apt-get update && apt
     pip3 install nibabel numpy nipype
 
 # Make directories to mount MATLAB; install Matlab dependencies
-RUN apt-get update && apt-get install -y libpng12-dev libfreetype6-dev libblas-dev liblapack-dev gfortran build-essential && \
+RUN apt-get update && apt-get install -y libpng-dev libfreetype6-dev libblas-dev liblapack-dev gfortran build-essential && \
     mkdir -p /opt/MATLAB
 ENV PATH=${PATH}:/opt/MATLAB/bin
 
